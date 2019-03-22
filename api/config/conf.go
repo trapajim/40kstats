@@ -2,6 +2,8 @@ package config
 
 import (
 	"fmt"
+	"log"
+	"os"
 
 	"github.com/spf13/viper"
 )
@@ -37,24 +39,29 @@ func GetConfig() *Config {
 	if err != nil {             // Handle errors reading the config file
 		panic(fmt.Errorf("Fatal error config file: %s \n", err))
 	}
-	pre := "development"
+	env := os.Getenv("ENV")
+
+	if env == "" {
+		log.Fatal("$ENV must be set")
+	}
+
 	return &Config{
 		DB: &DBConfig{
-			Host:     viper.GetString(pre + ".host"),
-			Port:     viper.GetString(pre + ".port"),
+			Host:     viper.GetString(env + ".host"),
+			Port:     viper.GetString(env + ".port"),
 			Dialect:  "postgres",
-			Username: viper.GetString(pre + ".user"),
-			Password: viper.GetString(pre + ".pass"),
-			Name:     viper.GetString(pre + ".dbname"),
+			Username: viper.GetString(env + ".user"),
+			Password: viper.GetString(env + ".pass"),
+			Name:     viper.GetString(env + ".dbname"),
 			Charset:  "utf8",
 		},
 		OAuth: &OAuth{
-			Id:       viper.GetString(pre + ".oauthId"),
-			Domain:   viper.GetString(pre + ".oauthDomain"),
-			Callback: viper.GetString(pre + ".oauthCallback"),
-			Secret:   viper.GetString(pre + ".oauthSecret"),
-			Audience: viper.GetString(pre + ".oauthSecret"),
-			ClientId: viper.GetString(pre + ".oauthClientId"),
+			Id:       viper.GetString(env + ".oauthId"),
+			Domain:   viper.GetString(env + ".oauthDomain"),
+			Callback: viper.GetString(env + ".oauthCallback"),
+			Secret:   viper.GetString(env + ".oauthSecret"),
+			Audience: viper.GetString(env + ".oauthSecret"),
+			ClientId: viper.GetString(env + ".oauthClientId"),
 		},
 	}
 }
