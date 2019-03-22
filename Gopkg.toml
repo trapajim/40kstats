@@ -1,0 +1,3 @@
+[metadata.heroku]
+  root-package = "github.com/trapajim/rest"
+  additional-tools = ["github.com/rubenv/sql-migrate"]
