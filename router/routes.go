@@ -17,7 +17,7 @@ var GetRoutes = Routes{
 	Route{
 		"Index",
 		"GET",
-		"/f",
+		"/dashboard",
 		handler.Index,
 	},
 	Route{
@@ -25,6 +25,12 @@ var GetRoutes = Routes{
 		"GET",
 		"/compare/{ids}",
 		handler.Comparison,
+	},
+	Route{
+		"Factions",
+		"GET",
+		"/factions",
+		handler.Factions,
 	},
 	// lists
 	Route{

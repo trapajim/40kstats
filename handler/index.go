@@ -6,6 +6,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/trapajim/rest/api/config"
+
 	"github.com/gorilla/mux"
 	"github.com/volatiletech/null"
 
@@ -47,6 +49,12 @@ func Index(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	//fmt.Println(c)
 	respondJSON(w, 200, dsb)
+}
+
+// Factions reponds with an map of all available factions
+func Factions(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+	el := config.GetFactions()
+	respondJSON(w, 200, el)
 }
 
 // Comparison compares two lists with each

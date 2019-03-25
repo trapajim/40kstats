@@ -31,6 +31,11 @@ type OAuth struct {
 	ClientId string
 }
 
+type Faction struct {
+	ID   int
+	Name string
+}
+
 func GetConfig() *Config {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
@@ -64,4 +69,39 @@ func GetConfig() *Config {
 			ClientId: viper.GetString(env + ".oauthClientId"),
 		},
 	}
+}
+
+func GetFactions() map[string][]Faction {
+	elements := map[string][]Faction{}
+	aeldari := []Faction{{ID: 01, Name: "Craftworlds"},
+		{ID: 02, Name: "Drukhari"},
+		{ID: 03, Name: "Harlequins"}, {ID: 04, Name: "Ynnari"}}
+	chaos := []Faction{{ID: 11, Name: "Chaos Space Marines"},
+		{ID: 12, Name: "Daemomns"},
+		{ID: 13, Name: "Dark Mechanicus"},
+		{ID: 14, Name: "Death Guard"},
+		{ID: 15, Name: "Renegade Knights"},
+		{ID: 16, Name: "Thousand Sons"}}
+	imperium := []Faction{{ID: 21, Name: "Adepta Soritas"},
+		{ID: 22, Name: "Adeptus Custodes"},
+		{ID: 23, Name: "Adeptus Mechanicus"},
+		{ID: 24, Name: "Adeptus Titanicus"},
+		{ID: 25, Name: "Astra Militarum"},
+		{ID: 26, Name: "Blood Angels"},
+		{ID: 27, Name: "Dark Angels"},
+		{ID: 28, Name: "Deathwatch"},
+		{ID: 29, Name: "Grey Knights"},
+		{ID: 210, Name: "Sisters of Silence"},
+		{ID: 211, Name: "Space Marines"},
+		{ID: 212, Name: "Space Wolves"},
+	}
+
+	elements["Aeldari"] = aeldari
+	elements["Chaos"] = chaos
+	elements["Imperium"] = imperium
+	elements["Orks"] = []Faction{{ID: 31, Name: "Orks"}}
+	elements["T'au Empire"] = []Faction{{ID: 41, Name: "T'au Empire"}}
+	elements["Tyranids"] = []Faction{{ID: 51, Name: "Tyranids"}}
+	elements["Gsc"] = []Faction{{ID: 61, Name: "Genestealer Cults"}}
+	return elements
 }
