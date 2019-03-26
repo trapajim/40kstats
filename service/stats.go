@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"time"
 
 	"github.com/volatiletech/sqlboiler/queries/qm"
@@ -127,8 +126,6 @@ func GetMatchupStat(ctx context.Context, userID string, list null.Int, win null.
 	if err != nil {
 		return result, err
 	}
-	fmt.Println("#####")
-	fmt.Println(result)
 	return result, nil
 }
 
