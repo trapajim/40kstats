@@ -1,12 +1,14 @@
-#rest api for wh40kstats
+# rest api for wh40kstats
 
-##dependencies
+(https://stats40k.herokuapp.com/)
+Frontend is done with React Material dashboard by [creativetim](https://github.com/creativetimofficial/material-dashboard)
+
+## dependencies
 
 | package     | link                                        |
 | ----------- | ------------------------------------------- |
 | sqlboiler   | (https://github.com/volatiletech/sqlboiler) |
 | sql-migrate | (https://github.com/rubenv/sql-migrate)     |
-| Mux         | (https://github.com/gorilla/mux)            |
 | Mux         | (https://github.com/gorilla/mux)            |
 | viper       | (https://github.com/spf13/viper)            |
 | auth0       | (https://auth0.com/)                        |
