@@ -3,7 +3,6 @@ package handler
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -41,7 +40,6 @@ func AddReport(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 		respondError(w, 500, err.Error())
 		return
 	}
-	fmt.Println(battleReport.EnemyFaction)
 	faction := null.StringFrom("")
 	if battleReport.ListID != 0 {
 		list, _ := models.FindArmyList(r.Context(), db, battleReport.ListID)
@@ -61,7 +59,11 @@ func AddReport(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	newBattleReport.EnemyScore = null.IntFrom(battleReport.EnemyScore)
 	newBattleReport.PlayerScore = null.IntFrom(battleReport.PlayerScore)
 	newBattleReport.GameMode = null.IntFrom(battleReport.GameMode)
-	newBattleReport.Insert(r.Context(), db, boil.Infer())
+	err = newBattleReport.Insert(r.Context(), db, boil.Infer())
+	if err != nil {
+		respondError(w, 500, err.Error())
+		return
+	}
 }
 
 // ListReports lists all battlereports
@@ -80,10 +82,7 @@ func ListReports(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 // DeleteBattleReport removes an report from the database
 func DeleteBattleReport(db *sql.DB, w http.ResponseWriter, r *http.Request) {
-	b, _ := ioutil.ReadAll(r.Body)
-	defer r.Body.Close()
-	var msg newList
-	_ = json.Unmarshal(b, &msg)
+
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {

@@ -91,10 +91,6 @@ func UpdateList(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 // DeleteList removes a list
 func DeleteList(db *sql.DB, w http.ResponseWriter, r *http.Request) {
-	b, _ := ioutil.ReadAll(r.Body)
-	defer r.Body.Close()
-	var msg newList
-	_ = json.Unmarshal(b, &msg)
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {

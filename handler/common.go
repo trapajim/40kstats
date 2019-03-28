@@ -4,10 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"html/template"
 	"net/http"
-	"os"
-	"path/filepath"
 
 	"github.com/gorilla/sessions"
 )
@@ -33,19 +30,6 @@ func respondJSON(w http.ResponseWriter, status int, payload interface{}) {
 // respondError makes the error response with payload as json format
 func respondError(w http.ResponseWriter, code int, message string) {
 	respondJSON(w, code, map[string]string{"error": message})
-}
-
-func renderTemplate(w http.ResponseWriter, tmpl string, data interface{}) {
-	cwd, _ := os.Getwd()
-	t, err := template.ParseFiles(filepath.Join(cwd, "./static/"+tmpl+".html"))
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	err = t.Execute(w, data)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
 }
 
 func getUserId(user interface{}) string {

@@ -24,7 +24,7 @@ func AuthRequired(inner http.Handler) http.Handler {
 		conf := config.GetConfig().OAuth
 		var auth0Domain = "https://" + conf.Domain + "/"
 		client := auth0.NewJWKClient(auth0.JWKClientOptions{URI: auth0Domain + ".well-known/jwks.json"}, nil)
-		configuration := auth0.NewConfiguration(client, []string{conf.ClientId}, auth0Domain, jose.RS256)
+		configuration := auth0.NewConfiguration(client, []string{conf.Audience}, auth0Domain, jose.RS256)
 		validator := auth0.NewValidator(configuration, nil)
 
 		token, err := validator.ValidateRequest(r)

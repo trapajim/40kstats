@@ -40,6 +40,7 @@ func GetConfig() *Config {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(".")
+	viper.AddConfigPath("../")
 	err := viper.ReadInConfig() // Find and read the config file
 	if err != nil {             // Handle errors reading the config file
 		panic(fmt.Errorf("Fatal error config file: %s \n", err))
@@ -65,7 +66,7 @@ func GetConfig() *Config {
 			Domain:   viper.GetString(env + ".oauthDomain"),
 			Callback: viper.GetString(env + ".oauthCallback"),
 			Secret:   viper.GetString(env + ".oauthSecret"),
-			Audience: viper.GetString(env + ".oauthSecret"),
+			Audience: viper.GetString(env + ".oauthAudience"),
 			ClientId: viper.GetString(env + ".oauthClientId"),
 		},
 	}

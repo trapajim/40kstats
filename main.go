@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/rubenv/sql-migrate"
+	migrate "github.com/rubenv/sql-migrate"
 	"github.com/trapajim/rest/api"
 	"github.com/trapajim/rest/api/config"
 	"github.com/volatiletech/sqlboiler/boil"
@@ -25,7 +25,7 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	f, err3 := migrate.Exec(db, "postgres", migrations, migrate.Up)
+	_, err3 := migrate.Exec(db, "postgres", migrations, migrate.Up)
 	if err3 != nil {
 		fmt.Println(err)
 	}
@@ -34,7 +34,6 @@ func main() {
 	if port == "" {
 		log.Fatal("$PORT must be set")
 	}
-	fmt.Println(f)
 	app := &api.App{}
 	app.Init(config)
 	app.Run(":" + port)
