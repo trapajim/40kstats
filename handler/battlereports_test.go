@@ -19,7 +19,7 @@ func emptyTableBattleReport() {
 }
 
 func addBattleReport() models.Battlereport {
-	bt := models.Battlereport{UserFaction: null.StringFrom("Necrons"), UserID: null.StringFrom(uid)}
+	bt := models.Battlereport{UserFaction: null.StringFrom("Necrons"), UserID: null.StringFrom(uid), Win: null.BoolFrom(true)}
 	bt.Insert(context.Background(), a.DB, boil.Infer())
 	return bt
 }
@@ -87,4 +87,26 @@ func TestAddReport(t *testing.T) {
 	assert.Equal(http.StatusOK, response.Code, "The status code should be OK")
 	len, _ = models.Battlereports().Count(ctx, a.DB)
 	assert.Equal(int64(1), len, "Battlereports should be empty")
+}
+
+func TestUpdateBattlereport(t *testing.T) {
+	emptyTableBattleReport()
+	ctx := context.Background()
+	report := addBattleReport()
+	assert := assert.New(t)
+
+	path := fmt.Sprintf("/v1/battlereport/%d", report.ID)
+	AuthRequired("PUT", path, t)
+
+	payload := []byte(`{"win": false}`)
+	req, _ := http.NewRequest("PUT", path, bytes.NewBuffer(payload))
+	req.Header.Add("authorization", fmt.Sprintf("%s %s", tok.TokenType, tok.AccessToken))
+	response := executeRequest(req)
+	assert.Equal(http.StatusOK, response.Code, "The status code should be OK")
+
+	updated, _ := models.Battlereports().One(ctx, a.DB)
+	assert.Equal(false, updated.Win, "Expected the win to be false")
+
+	checkWrongUserBattleReport("PUT", "/v1/battlereport/%d", nil, t)
+	checkInvalidParameter("PUT", "/v1/battlereport/%s", t)
 }
