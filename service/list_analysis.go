@@ -4,18 +4,27 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/trapajim/rest/api/config"
 )
 
 // ListMetaData defines the meta deta of a list
 type ListMetaData struct {
-	PL  int
-	PTS int
-	CP  int
+	PL      int
+	PTS     int
+	CP      int
+	Faction string
 }
 
 // ExractMetaData gets the meta data of an army list
 func ExractMetaData(list string) ListMetaData {
 	metaDataResult := ListMetaData{}
+	extractListMeta(list, &metaDataResult)
+	extractFaction(list, &metaDataResult)
+	return metaDataResult
+}
+
+func extractListMeta(list string, metaDataResult *ListMetaData) {
 	r := regexp.MustCompile("(?s)Total: \\[(.*?)\\]")
 	extractedMetaString := r.FindStringSubmatch(list)
 	metaData := strings.Split(extractedMetaString[1], ",")
@@ -36,5 +45,24 @@ func ExractMetaData(list string) ListMetaData {
 			metaDataResult.CP = intResult
 		}
 	}
-	return metaDataResult
+}
+
+type factionCount struct {
+	name  string
+	count int
+}
+
+func extractFaction(list string, metaDataResult *ListMetaData) {
+	factions := config.GetFactions()
+	result := factionCount{count: 0}
+	for _, faction := range factions {
+		for _, sub := range faction {
+			count := strings.Count(list, sub.Name)
+			if count > result.count {
+				result.count = count
+				result.name = sub.Name
+			}
+		}
+	}
+	metaDataResult.Faction = result.name
 }
