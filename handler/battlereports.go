@@ -101,3 +101,60 @@ func DeleteBattleReport(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	}
 	list.Delete(r.Context(), db)
 }
+
+// UpdateBattleReport updates a battlereport
+func UpdateBattleReport(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+	b, err := ioutil.ReadAll(r.Body)
+	userID := null.StringFrom(getUserId(r.Context().Value("user")))
+	defer r.Body.Close()
+	if err != nil {
+		respondError(w, 500, err.Error())
+		return
+	}
+	var battleReport report
+	err = json.Unmarshal(b, &battleReport)
+	if err != nil {
+		respondError(w, 500, err.Error())
+		return
+	}
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		respondError(w, 500, err.Error())
+		return
+	}
+	report, err := models.
+		FindBattlereport(r.Context(), db, id)
+	if err != nil {
+		respondError(w, 404, err.Error())
+		return
+	}
+	if report.UserID != userID {
+		respondError(w, 403, "You don't have permission to change this report")
+		return
+	}
+	if battleReport.EnemyFaction != "" {
+		report.EnemyFaction = null.StringFrom(battleReport.EnemyFaction)
+	}
+	if battleReport.EnemyList != "" {
+		report.EnemyList = null.StringFrom(battleReport.EnemyList)
+	}
+	if battleReport.EnemyScore != 0 {
+		report.EnemyScore = null.IntFrom(battleReport.EnemyScore)
+	}
+	if battleReport.GameMode != 0 {
+		report.GameMode = null.IntFrom(battleReport.GameMode)
+	}
+	if battleReport.ListID != 0 {
+		report.ListID = null.IntFrom(battleReport.ListID)
+	}
+	if battleReport.PlayerScore != 0 {
+		report.PlayerScore = null.IntFrom(battleReport.PlayerScore)
+	}
+	if battleReport.UserFaction != "" {
+		report.UserFaction = null.StringFrom(battleReport.UserFaction)
+	}
+	report.Win = null.BoolFrom(battleReport.Win)
+
+	report.Update(r.Context(), db, boil.Infer())
+}

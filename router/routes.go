@@ -71,9 +71,15 @@ var GetRoutes = Routes{
 		handler.ListReports,
 	},
 	Route{
-		"Delete a",
+		"Delete a battle report",
 		"DELETE",
 		"/battlereport/{id}",
 		handler.DeleteBattleReport,
+	},
+	Route{
+		"Update a battle report",
+		"Put",
+		"/battlereport/{id}",
+		handler.UpdateBattleReport,
 	},
 }
