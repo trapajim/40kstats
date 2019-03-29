@@ -24,6 +24,23 @@ func addBattleReport() models.Battlereport {
 	return bt
 }
 
+func checkWrongUserBattleReport(method, path string, payload []byte, t *testing.T) {
+	bt := models.Battlereport{UserFaction: null.StringFrom("Necrons"), UserID: null.StringFrom("notme")}
+	bt.Insert(context.Background(), a.DB, boil.Infer())
+	path = fmt.Sprintf(path, bt.ID)
+	req, _ := http.NewRequest(method, path, bytes.NewBuffer(payload))
+	req.Header.Add("authorization", fmt.Sprintf("%s %s", tok.TokenType, tok.AccessToken))
+	response := executeRequest(req)
+	assert.Equal(t, http.StatusForbidden, response.Code, "The status code should be Forbidden")
+}
+
+func checkInvalidParameter(method, path string, t *testing.T) {
+	path = fmt.Sprintf(path, "bbb")
+	req, _ := http.NewRequest(method, path, nil)
+	req.Header.Add("authorization", fmt.Sprintf("%s %s", tok.TokenType, tok.AccessToken))
+	response := executeRequest(req)
+	assert.Equal(t, http.StatusInternalServerError, response.Code, "The status code should be Internal Server error")
+}
 func TestListReports(t *testing.T) {
 	AuthRequired("GET", "/v1/battlereport", t)
 	req, _ := http.NewRequest("GET", "/v1/battlereport", nil)
@@ -46,6 +63,9 @@ func TestDeleteBattleReport(t *testing.T) {
 	assert.Equal(http.StatusOK, response.Code, "The status code should be OK")
 	len, _ = models.Battlereports().Count(ctx, a.DB)
 	assert.Equal(int64(0), len, "Battlereports should be empty")
+
+	checkWrongUserBattleReport("DELETE", "/v1/battlereport/%d", nil, t)
+	checkInvalidParameter("DELETE", "/v1/battlereport/%s", t)
 }
 
 func TestAddReport(t *testing.T) {
