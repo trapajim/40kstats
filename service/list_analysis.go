@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
@@ -10,10 +11,11 @@ import (
 
 // ListMetaData defines the meta deta of a list
 type ListMetaData struct {
-	PL      int
-	PTS     int
-	CP      int
-	Faction string
+	PL          int
+	PTS         int
+	CP          int
+	Faction     string
+	Detachments []config.Detachments
 }
 
 // ExractMetaData gets the meta data of an army list
@@ -21,6 +23,7 @@ func ExractMetaData(list string) ListMetaData {
 	metaDataResult := ListMetaData{}
 	extractListMeta(list, &metaDataResult)
 	extractFaction(list, &metaDataResult)
+	extractDetachments(list, &metaDataResult)
 	return metaDataResult
 }
 
@@ -65,4 +68,21 @@ func extractFaction(list string, metaDataResult *ListMetaData) {
 		}
 	}
 	metaDataResult.Faction = result.name
+}
+
+func extractDetachments(list string, metaDataResult *ListMetaData) {
+	detachments := config.GetDetachments()
+	result := []config.Detachments{}
+	for _, detachment := range detachments {
+		count := strings.Count(list, detachment.Name)
+		fmt.Println("/////")
+		fmt.Println(detachment.Name)
+		if count >= 1 {
+			for i := 0; i < count; i++ {
+				result = append(result, detachment)
+			}
+
+		}
+	}
+	metaDataResult.Detachments = result
 }

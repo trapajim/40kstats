@@ -36,6 +36,11 @@ type Faction struct {
 	Name string
 }
 
+type Detachments struct {
+	Name string
+	CP   int
+}
+
 func GetConfig() *Config {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
@@ -105,4 +110,16 @@ func GetFactions() map[string][]Faction {
 	elements["Tyranids"] = []Faction{{ID: 51, Name: "Tyranids"}}
 	elements["Gsc"] = []Faction{{ID: 61, Name: "Genestealer Cults"}}
 	return elements
+}
+
+// GetDetachments returns the detachments with its cp costs
+func GetDetachments() []Detachments {
+	// Air Wing 1cp
+	detachments := []Detachments{{"Air Wing", 1}, {"Auxiliary Support", -1},
+		{"Battalion", 5}, {"Brigade", 12}, {"Fortification", 0}, {"Outrider", 1},
+		{"Patrol", 0}, {"Planetstrike Attacker", 5}, {"Planetstrike Defender", 5},
+		{"Spearhead", 1}, {"Stronghold Assault Attacker", 5}, {"Stronghold Assault Defender", 5},
+		{"Super-Heavy Auxiliary", 0}, {"Super-Heavy", 3}, {"Supreme Command", 1}, {"Vanguard", 1}}
+
+	return detachments
 }
