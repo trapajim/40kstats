@@ -3,6 +3,7 @@ package handler_test
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"testing"
@@ -111,4 +112,23 @@ func TestUpdateBattlereport(t *testing.T) {
 
 	checkWrongUserBattleReport("PUT", "/v1/battlereport/%d", payload, t)
 	checkInvalidParameter("PUT", "/v1/battlereport/%s", payload, t)
+}
+
+func TestShowBattleReport(t *testing.T) {
+	emptyTableBattleReport()
+	report := addBattleReport()
+	assert := assert.New(t)
+
+	path := fmt.Sprintf("/v1/battlereport/%d", report.ID)
+	AuthRequired("GET", path, t)
+
+	req, _ := http.NewRequest("GET", path, nil)
+	req.Header.Add("authorization", fmt.Sprintf("%s %s", tok.TokenType, tok.AccessToken))
+	response := executeRequest(req)
+	assert.Equal(http.StatusOK, response.Code, "The status code should be OK")
+
+	json, _ := json.Marshal(report)
+	assert.Equal(string(json), response.Body.String(), "it should match")
+	checkWrongUserBattleReport("GET", "/v1/battlereport/%d", nil, t)
+	checkInvalidParameter("GET", "/v1/battlereport/%s", nil, t)
 }

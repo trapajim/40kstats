@@ -82,4 +82,10 @@ var GetRoutes = Routes{
 		"/battlereport/{id}",
 		handler.UpdateBattleReport,
 	},
+	Route{
+		"Show a battle report",
+		"GET",
+		"/battlereport/{id}",
+		handler.ShowBattleReport,
+	},
 }

@@ -158,3 +158,26 @@ func UpdateBattleReport(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	report.Update(r.Context(), db, boil.Infer())
 }
+
+// ShowBattleReport shows a battlereport by id
+func ShowBattleReport(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+	userID := null.StringFrom(getUserId(r.Context().Value("user")))
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		respondError(w, 500, err.Error())
+		return
+	}
+	report, err := models.
+		FindBattlereport(r.Context(), db, id)
+	if err != nil {
+		respondError(w, 404, err.Error())
+		return
+	}
+	if report.UserID != userID {
+		respondError(w, 403, "You can not view this report")
+		return
+	}
+
+	respondJSON(w, 200, report)
+}
