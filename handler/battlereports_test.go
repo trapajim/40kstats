@@ -27,15 +27,17 @@ func addBattleReport() models.Battlereport {
 func checkWrongUserBattleReport(method, path string, payload []byte, t *testing.T) {
 	bt := models.Battlereport{UserFaction: null.StringFrom("Necrons"), UserID: null.StringFrom("notme")}
 	bt.Insert(context.Background(), a.DB, boil.Infer())
+	path = fmt.Sprintf(path, bt.ID)
 	req, _ := http.NewRequest(method, path, bytes.NewBuffer(payload))
 	req.Header.Add("authorization", fmt.Sprintf("%s %s", tok.TokenType, tok.AccessToken))
 	response := executeRequest(req)
 	assert.Equal(t, http.StatusForbidden, response.Code, "The status code should be Forbidden")
+
 }
 
-func checkInvalidParameter(method, path string, t *testing.T) {
+func checkInvalidParameter(method, path string, payload []byte, t *testing.T) {
 	path = fmt.Sprintf(path, "bbb")
-	req, _ := http.NewRequest(method, path, nil)
+	req, _ := http.NewRequest(method, path, bytes.NewBuffer(payload))
 	req.Header.Add("authorization", fmt.Sprintf("%s %s", tok.TokenType, tok.AccessToken))
 	response := executeRequest(req)
 	assert.Equal(t, http.StatusInternalServerError, response.Code, "The status code should be Internal Server error")
@@ -64,7 +66,7 @@ func TestDeleteBattleReport(t *testing.T) {
 	assert.Equal(int64(0), len, "Battlereports should be empty")
 
 	checkWrongUserBattleReport("DELETE", "/v1/battlereport/%d", nil, t)
-	checkInvalidParameter("DELETE", "/v1/battlereport/%s", t)
+	checkInvalidParameter("DELETE", "/v1/battlereport/%s", nil, t)
 }
 
 func TestAddReport(t *testing.T) {
@@ -107,6 +109,6 @@ func TestUpdateBattlereport(t *testing.T) {
 	assert.Equal(null.BoolFrom(false), updated.Win, "Expected win to be false")
 	assert.Equal(null.StringFrom("Necrons"), updated.UserFaction, "Expected userfaction to be unchanged")
 
-	//checkWrongUserBattleReport("PUT", "/v1/battlereport/%d", nil, t)
-	checkInvalidParameter("PUT", "/v1/battlereport/%s", t)
+	checkWrongUserBattleReport("PUT", "/v1/battlereport/%d", payload, t)
+	checkInvalidParameter("PUT", "/v1/battlereport/%s", payload, t)
 }
