@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
@@ -75,8 +74,6 @@ func extractDetachments(list string, metaDataResult *ListMetaData) {
 	result := []config.Detachments{}
 	for _, detachment := range detachments {
 		count := strings.Count(list, detachment.Name)
-		fmt.Println("/////")
-		fmt.Println(detachment.Name)
 		if count >= 1 {
 			for i := 0; i < count; i++ {
 				result = append(result, detachment)

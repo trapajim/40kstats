@@ -57,6 +57,12 @@ var GetRoutes = Routes{
 		"/show-list",
 		handler.ShowLists,
 	},
+	Route{
+		"Analyze a list and return its metadata",
+		"Get",
+		"/analyze",
+		handler.AnalyzeList,
+	},
 	// battle reports
 	Route{
 		"Add new battle report",

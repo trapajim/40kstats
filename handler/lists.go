@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/trapajim/rest/service"
+
 	. "github.com/volatiletech/sqlboiler/queries/qm"
 
 	"github.com/gorilla/mux"
@@ -125,4 +127,18 @@ func ShowLists(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	respondJSON(w, 200, lists)
+}
+
+// AnalyzeList analyzses a given list and returns its meta data
+func AnalyzeList(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+	b, _ := ioutil.ReadAll(r.Body)
+	defer r.Body.Close()
+	var msg newList
+	err := json.Unmarshal(b, &msg)
+	if err != nil {
+		respondError(w, 500, err.Error())
+		return
+	}
+	meta := service.ExractMetaData(msg.List)
+	respondJSON(w, 200, meta)
 }

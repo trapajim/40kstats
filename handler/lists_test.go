@@ -3,12 +3,15 @@ package handler_test
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/trapajim/rest/api/config"
 	"github.com/trapajim/rest/models"
+	"github.com/trapajim/rest/service"
 	"github.com/volatiletech/null"
 	"github.com/volatiletech/sqlboiler/boil"
 )
@@ -92,6 +95,20 @@ func TestShowLists(t *testing.T) {
 	req.Header.Add("authorization", fmt.Sprintf("%s %s", tok.TokenType, tok.AccessToken))
 	response := executeRequest(req)
 	assert.Equal(t, http.StatusOK, response.Code, "The status code should be OK")
+}
+
+func TestAnalyzeLists(t *testing.T) {
+	AuthRequired("GET", "/v1/analyze", t)
+	payload := []byte(`{"list": "++ Battalion Detachment +5CP (Imperium - Adeptus Custodes)[79 PL, 1552pts, -1CP] ++No Force Org Slot +Open the Vaults (1 Relic) [-1CP]Use Beta RulesHQ  ++ Vanguard Detachment +1CP (Imperium - Adeptus Custodes)[79 PL, 1552pts, -1CP] ++No Force Org Slot +Open the Vaults (1 Relic) [-1CP]Use Beta RulesHQ +++ Total: [101 PL, 5CP, 2000pts] ++"}`)
+	req, _ := http.NewRequest("GET", "/v1/analyze", bytes.NewBuffer(payload))
+	req.Header.Add("authorization", fmt.Sprintf("%s %s", tok.TokenType, tok.AccessToken))
+	response := executeRequest(req)
+	assert.Equal(t, http.StatusOK, response.Code, "The status code should be OK")
+
+	meta := service.ListMetaData{CP: 5, PL: 101, PTS: 2000, Faction: "Adeptus Custodes", Detachments: []config.Detachments{{Name: "Battalion", CP: 5}, {Name: "Vanguard", CP: 1}}}
+	json, _ := json.Marshal(meta)
+	body := response.Body.String()
+	assert.Equal(t, string(json), body, "it should match")
 }
 
 func checkWrongUser(method, path string, payload []byte, t *testing.T) {
