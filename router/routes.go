@@ -59,7 +59,7 @@ var GetRoutes = Routes{
 	},
 	Route{
 		"Analyze a list and return its metadata",
-		"Get",
+		"POST",
 		"/analyze",
 		handler.AnalyzeList,
 	},

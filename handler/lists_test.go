@@ -98,9 +98,9 @@ func TestShowLists(t *testing.T) {
 }
 
 func TestAnalyzeLists(t *testing.T) {
-	AuthRequired("GET", "/v1/analyze", t)
+	AuthRequired("POST", "/v1/analyze", t)
 	payload := []byte(`{"list": "++ Battalion Detachment +5CP (Imperium - Adeptus Custodes)[79 PL, 1552pts, -1CP] ++No Force Org Slot +Open the Vaults (1 Relic) [-1CP]Use Beta RulesHQ  ++ Vanguard Detachment +1CP (Imperium - Adeptus Custodes)[79 PL, 1552pts, -1CP] ++No Force Org Slot +Open the Vaults (1 Relic) [-1CP]Use Beta RulesHQ +++ Total: [101 PL, 5CP, 2000pts] ++"}`)
-	req, _ := http.NewRequest("GET", "/v1/analyze", bytes.NewBuffer(payload))
+	req, _ := http.NewRequest("POST", "/v1/analyze", bytes.NewBuffer(payload))
 	req.Header.Add("authorization", fmt.Sprintf("%s %s", tok.TokenType, tok.AccessToken))
 	response := executeRequest(req)
 	assert.Equal(t, http.StatusOK, response.Code, "The status code should be OK")
