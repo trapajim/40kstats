@@ -31,6 +31,9 @@ type ArmyList struct {
 	UserID    null.String `boil:"user_id" json:"user_id,omitempty" toml:"user_id" yaml:"user_id,omitempty"`
 	CreatedAt time.Time   `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 	UpdatedAt time.Time   `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`
+	PL        null.Int    `boil:"pl" json:"pl,omitempty" toml:"pl" yaml:"pl,omitempty"`
+	PTS       null.Int    `boil:"pts" json:"pts,omitempty" toml:"pts" yaml:"pts,omitempty"`
+	CP        null.Int    `boil:"cp" json:"cp,omitempty" toml:"cp" yaml:"cp,omitempty"`
 
 	R *armyListR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L armyListL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -44,6 +47,9 @@ var ArmyListColumns = struct {
 	UserID    string
 	CreatedAt string
 	UpdatedAt string
+	PL        string
+	PTS       string
+	CP        string
 }{
 	ID:        "id",
 	ListName:  "list_name",
@@ -52,6 +58,9 @@ var ArmyListColumns = struct {
 	UserID:    "user_id",
 	CreatedAt: "created_at",
 	UpdatedAt: "updated_at",
+	PL:        "pl",
+	PTS:       "pts",
+	CP:        "cp",
 }
 
 // Generated where
@@ -109,6 +118,29 @@ func (w whereHelpertime_Time) GTE(x time.Time) qm.QueryMod {
 	return qmhelper.Where(w.field, qmhelper.GTE, x)
 }
 
+type whereHelpernull_Int struct{ field string }
+
+func (w whereHelpernull_Int) EQ(x null.Int) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, false, x)
+}
+func (w whereHelpernull_Int) NEQ(x null.Int) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, true, x)
+}
+func (w whereHelpernull_Int) IsNull() qm.QueryMod    { return qmhelper.WhereIsNull(w.field) }
+func (w whereHelpernull_Int) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
+func (w whereHelpernull_Int) LT(x null.Int) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LT, x)
+}
+func (w whereHelpernull_Int) LTE(x null.Int) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LTE, x)
+}
+func (w whereHelpernull_Int) GT(x null.Int) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GT, x)
+}
+func (w whereHelpernull_Int) GTE(x null.Int) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GTE, x)
+}
+
 var ArmyListWhere = struct {
 	ID        whereHelperint
 	ListName  whereHelpernull_String
@@ -117,6 +149,9 @@ var ArmyListWhere = struct {
 	UserID    whereHelpernull_String
 	CreatedAt whereHelpertime_Time
 	UpdatedAt whereHelpertime_Time
+	PL        whereHelpernull_Int
+	PTS       whereHelpernull_Int
+	CP        whereHelpernull_Int
 }{
 	ID:        whereHelperint{field: `id`},
 	ListName:  whereHelpernull_String{field: `list_name`},
@@ -125,6 +160,9 @@ var ArmyListWhere = struct {
 	UserID:    whereHelpernull_String{field: `user_id`},
 	CreatedAt: whereHelpertime_Time{field: `created_at`},
 	UpdatedAt: whereHelpertime_Time{field: `updated_at`},
+	PL:        whereHelpernull_Int{field: `pl`},
+	PTS:       whereHelpernull_Int{field: `pts`},
+	CP:        whereHelpernull_Int{field: `cp`},
 }
 
 // ArmyListRels is where relationship names are stored.
@@ -148,8 +186,8 @@ func (*armyListR) NewStruct() *armyListR {
 type armyListL struct{}
 
 var (
-	armyListColumns               = []string{"id", "list_name", "faction", "list", "user_id", "created_at", "updated_at"}
-	armyListColumnsWithoutDefault = []string{"list_name", "faction", "list", "user_id", "created_at", "updated_at"}
+	armyListColumns               = []string{"id", "list_name", "faction", "list", "user_id", "created_at", "updated_at", "pl", "pts", "cp"}
+	armyListColumnsWithoutDefault = []string{"list_name", "faction", "list", "user_id", "created_at", "updated_at", "pl", "pts", "cp"}
 	armyListColumnsWithDefault    = []string{"id"}
 	armyListPrimaryKeyColumns     = []string{"id"}
 )

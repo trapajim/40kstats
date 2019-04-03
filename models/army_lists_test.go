@@ -896,7 +896,7 @@ func testArmyListsSelect(t *testing.T) {
 }
 
 var (
-	armyListDBTypes = map[string]string{`ID`: `integer`, `ListName`: `character varying`, `Faction`: `character varying`, `List`: `text`, `UserID`: `character varying`, `CreatedAt`: `timestamp without time zone`, `UpdatedAt`: `timestamp without time zone`}
+	armyListDBTypes = map[string]string{`ID`: `integer`, `ListName`: `character varying`, `Faction`: `character varying`, `List`: `text`, `UserID`: `character varying`, `CreatedAt`: `timestamp without time zone`, `UpdatedAt`: `timestamp without time zone`, `PL`: `integer`, `PTS`: `integer`, `CP`: `integer`}
 	_               = bytes.MinRead
 )
 
