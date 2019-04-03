@@ -22,6 +22,9 @@ type newList struct {
 	Name    string `json:"name"`
 	List    string `json:"list"`
 	Faction string `json:"faction"`
+	Pts     int    `json:"pts"`
+	Pl      int    `json:"pl"`
+	Cp      int    `json:"cp"`
 }
 
 type user struct {
@@ -47,10 +50,12 @@ func AddNewList(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	var newArmyList models.ArmyList
 	newArmyList.Faction = null.StringFrom(msg.Faction)
-	fmt.Println(msg.Faction)
 	newArmyList.List = null.StringFrom(msg.List)
 	newArmyList.ListName = null.StringFrom(msg.Name)
 	newArmyList.UserID = null.StringFrom(userID)
+	newArmyList.PTS = null.IntFrom(msg.Pts)
+	newArmyList.PL = null.IntFrom(msg.Pl)
+	newArmyList.CP = null.IntFrom(msg.Cp)
 	newArmyList.Insert(r.Context(), db, boil.Infer())
 	fmt.Println(msg)
 }
@@ -88,6 +93,9 @@ func UpdateList(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	list.ListName = null.StringFrom(msg.Name)
 	list.Faction = null.StringFrom(msg.Faction)
 	list.List = null.StringFrom(msg.List)
+	list.PTS = null.IntFrom(msg.Pts)
+	list.PL = null.IntFrom(msg.Pl)
+	list.CP = null.IntFrom(msg.Cp)
 	list.Update(r.Context(), db, boil.Infer())
 }
 
