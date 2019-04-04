@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/trapajim/rest/handler"
 	"github.com/trapajim/rest/models"
 
 	"github.com/volatiletech/null"
@@ -126,8 +127,8 @@ func TestShowBattleReport(t *testing.T) {
 	req.Header.Add("authorization", fmt.Sprintf("%s %s", tok.TokenType, tok.AccessToken))
 	response := executeRequest(req)
 	assert.Equal(http.StatusOK, response.Code, "The status code should be OK")
-
-	json, _ := json.Marshal(report)
+	result := handler.ShowBattlereportReturn{report, ""}
+	json, _ := json.Marshal(result)
 	assert.Equal(string(json), response.Body.String(), "it should match")
 	checkWrongUserBattleReport("GET", "/v1/battlereport/%d", nil, t)
 	checkInvalidParameter("GET", "/v1/battlereport/%s", nil, t)

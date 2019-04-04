@@ -159,6 +159,11 @@ func UpdateBattleReport(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	report.Update(r.Context(), db, boil.Infer())
 }
 
+type ShowBattlereportReturn struct {
+	Report models.Battlereport
+	List   string
+}
+
 // ShowBattleReport shows a battlereport by id
 func ShowBattleReport(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	userID := null.StringFrom(getUserId(r.Context().Value("user")))
@@ -174,10 +179,18 @@ func ShowBattleReport(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 		respondError(w, 404, err.Error())
 		return
 	}
+
 	if report.UserID != userID {
 		respondError(w, 403, "You can not view this report")
 		return
 	}
-
-	respondJSON(w, 200, report)
+	list := ""
+	if report.ListID.Int > 0 {
+		result, err := models.FindArmyList(r.Context(), db, report.ListID.Int)
+		if err == nil {
+			list = result.List.String
+		}
+	}
+	result := ShowBattlereportReturn{*report, list}
+	respondJSON(w, 200, result)
 }
